@@ -19,7 +19,6 @@ export function MessagesPage() {
     currentRoomId,
     messages: socketMessages,
     lastMessages,
-    chatHistory,
     connect,
     setUsername,
     joinChat,
@@ -28,7 +27,6 @@ export function MessagesPage() {
     sendImage,
     sendEmoji,
     clearMessages,
-    getChatHistory,
     logout,
   } = useSocket();
 
