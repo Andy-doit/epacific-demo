@@ -147,6 +147,7 @@ Dự án **Employee Chat Management System** đã hoàn thành tất cả các m
 - Thêm Storybook cho component documentation
 - Thêm CI/CD pipeline (GitHub Actions)
 - Thêm monitoring (Sentry, Analytics)
+OSLD WARD
 
 ---
 

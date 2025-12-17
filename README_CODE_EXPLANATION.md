@@ -27,12 +27,12 @@
 │      Custom Hooks                   │
 ├─────────────────────────────────────┤
 │  React Query (Server State)         │
-│  Redux (Client State)                │
-│  Socket.IO (Real-time)               │
+│  Redux (Client State)               │
+│  Socket.IO (Real-time)              │
 ├─────────────────────────────────────┤
-│      Services Layer                  │
+│      Services Layer                 │
 ├─────────────────────────────────────┤
-│      API Layer (Axios)               │
+│      API Layer (Axios)              │
 └─────────────────────────────────────┘
 ```
 
@@ -477,11 +477,11 @@ export const useUpdateProfile = () => {
 **Return values:**
 ```typescript
 {
-  data: Profile | undefined,      // Data từ API
-  isLoading: boolean,              // Đang load lần đầu
-  isFetching: boolean,             // Đang fetch (kể cả refetch)
-  error: Error | null,             // Lỗi nếu có
-  refetch: () => void,             // Function để refetch
+  data: Profile | undefined,      
+  isLoading: boolean,             
+  isFetching: boolean,            
+  error: Error | null,            
+  refetch: () => void,            
 }
 ```
 
@@ -493,6 +493,7 @@ export const useUpdateProfile = () => {
 - `5 * 60 * 1000`: 5 phút
 - Trong 5 phút, data được coi là fresh
 - Không refetch nếu data còn fresh
+
 
 #### **`useMutation`** - Update Data
 

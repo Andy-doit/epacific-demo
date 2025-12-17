@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense} from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Loader2 } from "lucide-react";
@@ -21,6 +21,7 @@ function PageLoader() {
 }
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>

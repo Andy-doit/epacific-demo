@@ -26,6 +26,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useSocket } from "@/hooks/use-socket";
+import { useEffect, useState } from "react";
+import { UsernameDialog } from "../UsernameDialog";
 
 const menuItems = [
   {
@@ -44,13 +47,52 @@ const menuItems = [
     href: "/employees",
   },
 ];
-
+const USERNAME_STORAGE_KEY = 'chat-username';
 export function DashboardLayout() {
+  const [showUsernameDialog, setShowUsernameDialog] = useState(false);
+  const {
+    currentUser,
+    onlineUsers,
+    currentRoomId,
+    messages: socketMessages,
+    lastMessages,
+    connect,
+    setUsername,
+    joinChat,
+    sendMessage,
+    sendFile,
+    sendImage,
+    sendEmoji,
+    clearMessages,
+    logout,
+  } = useSocket();
+
+  // Khởi tạo socket + username một lần ở layout để giữ kết nối khi đổi trang
+  useEffect(() => {
+    const savedUsername = localStorage.getItem(USERNAME_STORAGE_KEY);
+    if (!savedUsername) {
+      setShowUsernameDialog(true);
+    } else {
+      connect();
+      setTimeout(() => {
+        setUsername(savedUsername);
+      }, 100);
+    }
+  }, [connect, setUsername]);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
+  const handleUsernameSet = (username: string) => {
+    setShowUsernameDialog(false);
+    connect();
+    setUsername(username);
+  };
   return (
     <SidebarProvider>
+       <UsernameDialog 
+        open={showUsernameDialog}
+        onUsernameSet={handleUsernameSet}
+      />
       <div className="flex min-h-screen w-full">
         <Sidebar collapsible="icon">
           <SidebarHeader className="border-b border-sidebar-border/50">
@@ -129,7 +171,22 @@ export function DashboardLayout() {
             </div>
           </header>
           <div className="flex-1 overflow-auto p-6">
-            <Outlet />
+            <Outlet
+              context={{
+                currentUser,
+                onlineUsers,
+                currentRoomId,
+                socketMessages,
+                lastMessages,
+                joinChat,
+                sendMessage,
+                sendFile,
+                sendImage,
+                sendEmoji,
+                clearMessages,
+                logout,
+              }}
+            />
           </div>
         </main>
       </div>

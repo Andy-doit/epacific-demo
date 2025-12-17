@@ -70,6 +70,37 @@ export function ProfilePage() {
     }
   }, [profile, formData, updateProfileMutation, dispatch]);
 
+  // Memoize display values to avoid recalculating on every render
+  // Must be called before any early returns to follow Rules of Hooks
+  const displayValues = useMemo(() => {
+    if (!profile) {
+      return {
+        name: '',
+        email: '',
+        phone: '',
+        position: '',
+        department: '',
+        joinDate: '',
+        city: '',
+        bio: '',
+        avatar: '',
+      };
+    }
+    return {
+      name: formData.fullName || profile.fullName || '',
+      email: formData.email || profile.email || '',
+      phone: formData.phoneNumber || profile.phoneNumber || '',
+      position: formData.position || profile.position || '',
+      department: formData.department || profile.department || '',
+      joinDate: formData.joinDate || profile.joinDate || '',
+      city: formData.city || profile.city || '',
+      bio: formData.bio || profile.bio || '',
+      avatar: formData.avatar || profile.avatar || '',
+    };
+  }, [formData, profile]);
+
+  const { name: displayName, email: displayEmail, phone: displayPhone, position: displayPosition, department: displayDepartment, joinDate: displayJoinDate, city: displayCity, bio: displayBio, avatar: displayAvatar } = displayValues;
+
   // Loading state
   if (isLoading) {
     return (
@@ -119,21 +150,6 @@ export function ProfilePage() {
       </div>
     );
   }
-
-  // Memoize display values to avoid recalculating on every render
-  const displayValues = useMemo(() => ({
-    name: formData.fullName || profile.fullName || '',
-    email: formData.email || profile.email || '',
-    phone: formData.phoneNumber || profile.phoneNumber || '',
-    position: formData.position || profile.position || '',
-    department: formData.department || profile.department || '',
-    joinDate: formData.joinDate || profile.joinDate || '',
-    city: formData.city || profile.city || '',
-    bio: formData.bio || profile.bio || '',
-    avatar: formData.avatar || profile.avatar || '',
-  }), [formData, profile]);
-
-  const { name: displayName, email: displayEmail, phone: displayPhone, position: displayPosition, department: displayDepartment, joinDate: displayJoinDate, city: displayCity, bio: displayBio, avatar: displayAvatar } = displayValues;
 
   return (
     <div className="space-y-6">

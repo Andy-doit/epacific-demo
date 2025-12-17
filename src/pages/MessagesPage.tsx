@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { useSocket } from "@/hooks/use-socket";
-import { UsernameDialog } from "@/components/UsernameDialog";
+import { useOutletContext } from "react-router-dom";
 import { UserList } from "@/components/chat/UserList";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { MessageList } from "@/components/chat/MessageList";
@@ -12,15 +11,28 @@ import type { OnlineUser, ChatGroup, Message } from "@/types/chat";
 
 const USERNAME_STORAGE_KEY = 'chat-username';
 
+type ChatOutletContext = {
+  currentUser: { socketId: string; username: string } | null;
+  onlineUsers: OnlineUser[];
+  currentRoomId: string | null;
+  socketMessages: any[];
+  lastMessages: Record<string, any>;
+  joinChat: (targetSocketId: string) => void;
+  sendMessage: (message: string, type: "text" | "emoji") => void;
+  sendFile: (file: File) => void;
+  sendImage: (file: File) => void;
+  sendEmoji: (emoji: string) => void;
+  clearMessages: () => void;
+  logout: () => void;
+};
+
 export function MessagesPage() {
   const {
     currentUser,
     onlineUsers,
     currentRoomId,
-    messages: socketMessages,
+    socketMessages,
     lastMessages,
-    connect,
-    setUsername,
     joinChat,
     sendMessage,
     sendFile,
@@ -28,28 +40,14 @@ export function MessagesPage() {
     sendEmoji,
     clearMessages,
     logout,
-  } = useSocket();
+  } = useOutletContext<ChatOutletContext>();
 
-  const [showUsernameDialog, setShowUsernameDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<OnlineUser | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<ChatGroup | null>(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  // Initialize socket connection and check for username
-  useEffect(() => {
-    const savedUsername = localStorage.getItem(USERNAME_STORAGE_KEY);
-    if (!savedUsername) {
-      setShowUsernameDialog(true);
-    } else {
-      connect();
-      setTimeout(() => {
-        setUsername(savedUsername);
-      }, 100);
-    }
-  }, [connect, setUsername]);
 
   // Convert socket messages to UI messages
   useEffect(() => {
@@ -116,12 +114,6 @@ export function MessagesPage() {
     sendEmoji(emoji);
   };
 
-  const handleUsernameSet = (username: string) => {
-    setShowUsernameDialog(false);
-    connect();
-    setUsername(username);
-  };
-
   const handleLogout = () => {
     logout();
     // Xóa username khỏi localStorage
@@ -131,18 +123,12 @@ export function MessagesPage() {
     setSelectedGroup(null);
     setMessage("");
     setMessages([]);
-    // Hiển thị lại dialog nhập tên
-    setShowUsernameDialog(true);
   };
 
   const currentChat = selectedUser || selectedGroup;
 
   return (
     <>
-      <UsernameDialog
-        open={showUsernameDialog}
-        onUsernameSet={handleUsernameSet}
-      />
     <div className="flex h-[calc(100vh-8rem)] gap-6">
         <UserList
           currentUser={currentUser}

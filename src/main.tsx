@@ -10,6 +10,7 @@ import { QueryProvider } from './providers/QueryProvider'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
+      
       <QueryProvider>
         <App />
         <Toaster position="top-right" richColors />
