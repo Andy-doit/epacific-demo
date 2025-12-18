@@ -118,7 +118,7 @@ export function MessagesPage() {
     logout();
     // Xóa username khỏi localStorage
     localStorage.removeItem(USERNAME_STORAGE_KEY);
-    // Reset state
+    // Reset state 
     setSelectedUser(null);
     setSelectedGroup(null);
     setMessage("");
